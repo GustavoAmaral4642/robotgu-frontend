@@ -1,0 +1,112 @@
+.global-context-toggle {
+  padding: 12px 16px;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background: #e9ecef;
+  border-radius: 24px;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-checkbox:checked+.toggle-slider {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.toggle-checkbox:checked+.toggle-slider::before {
+  transform: translateX(24px);
+}
+
+.toggle-checkbox:disabled+.toggle-slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-text {
+  font-size: 0.95rem;
+  color: #495057;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-checkbox:checked~.toggle-text {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.toggle-icon {
+  font-size: 1.1rem;
+}
+
+.toggle-hint {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #e7f5ff;
+  border-left: 3px solid #667eea;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #495057;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .global-context-toggle {
+    padding: 10px 16px;
+  }
+
+  .toggle-text {
+    font-size: 0.9rem;
+  }
+
+  .toggle-hint {
+    font-size: 0.8rem;
+  }
+}

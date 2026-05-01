@@ -1,0 +1,102 @@
+.conversation-input {
+  display: flex;
+  gap: 12px;
+  padding: 16px 16px 20px;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.conversation-input textarea {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border-medium);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  resize: none;
+  transition: all 0.15s ease;
+  line-height: 1.6;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.conversation-input textarea:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 1px var(--accent-green);
+}
+
+.conversation-input textarea:disabled {
+  background: var(--bg-secondary);
+  cursor: not-allowed;
+  opacity: 0.7;
+  color: var(--text-tertiary);
+}
+
+.send-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--accent-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+
+.send-button:hover:not(:disabled) {
+  background: var(--accent-green-hover);
+}
+
+.send-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .conversation-input {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .conversation-input textarea {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .send-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .send-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}

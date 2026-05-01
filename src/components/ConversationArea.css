@@ -1,0 +1,172 @@
+.conversation-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  height: 100%;
+}
+
+.conversation-header {
+  padding: 20px 24px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.conversation-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.message-count-badge {
+  background: #e9ecef;
+  color: #495057;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.conversation-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.conversation-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.conversation-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.conversation-messages::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+.conversation-messages::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+.empty-conversation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-conversation h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.5rem;
+  color: #495057;
+}
+
+.empty-conversation p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.8;
+  max-width: 400px;
+}
+
+.empty-messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 6px;
+  padding: 16px;
+  margin-right: 40px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  width: fit-content;
+  align-items: center;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .conversation-header {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .conversation-header h2 {
+    font-size: 1.15rem;
+  }
+
+  .message-count-badge {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
+
+  .conversation-messages {
+    padding: 16px;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+
+  .empty-conversation h2 {
+    font-size: 1.25rem;
+  }
+
+  .empty-conversation p {
+    font-size: 0.9rem;
+  }
+}

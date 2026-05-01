@@ -1,0 +1,89 @@
+.memory-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.memory-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.memory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f3f5;
+}
+
+.memory-subject {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.memory-date {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.memory-question,
+.memory-answer {
+  margin-bottom: 16px;
+}
+
+.memory-question:last-child,
+.memory-answer:last-child {
+  margin-bottom: 0;
+}
+
+.memory-question strong,
+.memory-answer strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.memory-question p,
+.memory-answer p {
+  margin: 0;
+  color: #212529;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.memory-question {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.memory-answer {
+  background: #e7f5ff;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #74c0fc;
+}

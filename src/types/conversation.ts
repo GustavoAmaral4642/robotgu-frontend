@@ -24,6 +24,7 @@ export interface CreateConversationRequest {
 
 export interface SendMessageRequest {
   content: string;
+  keywords?: string;
 }
 
 export interface MessageResponse extends Message { }

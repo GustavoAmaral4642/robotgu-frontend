@@ -82,7 +82,7 @@ function App() {
     }
   };
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, keywords?: string) => {
     // Adiciona mensagem do usuário
     const userMessage: ChatMessage = {
       role: 'user',
@@ -99,7 +99,8 @@ function App() {
       const answer = await sendMessage(
         content,
         selectedSubject || '',
-        useGlobalContext
+        useGlobalContext,
+        keywords
       );
 
       // Adiciona resposta da IA
@@ -212,14 +213,14 @@ function App() {
     }
   };
 
-  const handleSendConversationMessage = async (content: string) => {
+  const handleSendConversationMessage = async (content: string, keywords?: string) => {
     if (!activeConversation) return;
 
     setIsLoadingConversation(true);
 
     try {
       // Envia para o backend (backend salva pergunta + resposta automaticamente)
-      await conversationService.sendMessage(activeConversation.id, content);
+      await conversationService.sendMessage(activeConversation.id, content, keywords);
 
       // Recarrega a conversa completa do backend
       const updatedConversation = await conversationService.get(activeConversation.id);

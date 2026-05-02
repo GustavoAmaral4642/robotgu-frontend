@@ -67,9 +67,13 @@ export const conversationService = {
    * Envia uma mensagem e recebe a resposta da IA
    * @param conversationId - ID da conversa
    * @param content - Conteúdo da mensagem
+   * @param keywords - Palavras-chave opcionais para busca contextual
    */
-  async sendMessage(conversationId: number, content: string): Promise<Message> {
-    const request: SendMessageRequest = { content };
+  async sendMessage(conversationId: number, content: string, keywords?: string): Promise<Message> {
+    const request: SendMessageRequest = { 
+      content,
+      ...(keywords && { keywords })
+    };
 
     const response = await fetch(
       `${API_BASE_URL}/conversations/${conversationId}/messages`,

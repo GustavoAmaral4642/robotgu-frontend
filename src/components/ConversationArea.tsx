@@ -63,6 +63,7 @@ const ConversationArea = ({ conversation, onSendMessage, isLoading }: Conversati
             <div className="typing-dot"></div>
             <div className="typing-dot"></div>
             <div className="typing-dot"></div>
+            <span className="typing-text">Processando (~5s)...</span>
           </div>
         )}
 

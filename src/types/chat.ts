@@ -2,6 +2,14 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  contextInfo?: ContextInfo;
+}
+
+export interface ContextInfo {
+  memoriesUsed?: number;
+  maxMemories?: number;
+  previousQuestions?: string[];
+  strategy?: string;
 }
 
 export interface ChatRequest {
@@ -12,6 +20,7 @@ export interface ChatRequest {
 
 export interface ChatResponse {
   answer: string;
+  contextInfo?: ContextInfo;
 }
 
 export interface MemoryResponse {

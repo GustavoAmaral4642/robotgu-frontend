@@ -84,6 +84,7 @@
     transform: scaleY(0.95);
     transform-origin: top;
   }
+
   to {
     opacity: 1;
     transform: scaleY(1);

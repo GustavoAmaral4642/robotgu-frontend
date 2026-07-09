@@ -32,7 +32,7 @@ const ConversationInput = ({ onSendMessage, disabled }: ConversationInputProps) 
         <span className="toggle-icon">{showAdvanced ? '∨' : '›'}</span>
         <span className="toggle-text">⚙️ Busca avançada</span>
       </div>
-      
+
       {showAdvanced && (
         <div className="conversation-advanced-section">
           <label htmlFor="conv-keywords" className="keywords-label">
@@ -52,7 +52,7 @@ const ConversationInput = ({ onSendMessage, disabled }: ConversationInputProps) 
           </div>
         </div>
       )}
-      
+
       <div className="conversation-input">
         <textarea
           value={input}

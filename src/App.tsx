@@ -96,7 +96,7 @@ function App() {
     try {
       // Envia para o backend e recebe resposta (com assunto se selecionado)
       // String vazia ativa auto-detecção de assunto no backend
-      const answer = await sendMessage(
+      const response = await sendMessage(
         content,
         selectedSubject || '',
         useGlobalContext,
@@ -106,8 +106,9 @@ function App() {
       // Adiciona resposta da IA
       const assistantMessage: ChatMessage = {
         role: 'assistant',
-        content: answer,
+        content: response.answer,
         timestamp: new Date(),
+        contextInfo: response.contextInfo,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -219,38 +220,61 @@ function App() {
     setIsLoadingConversation(true);
 
     try {
-      // Envia para o backend (backend salva pergunta + resposta automaticamente)
-      await conversationService.sendMessage(activeConversation.id, content, keywords);
+      // Envia para o backend e recebe a resposta da IA (backend salva tudo)
+      console.log('📤 Enviando mensagem para conversa:', activeConversation.id);
+      const aiResponse = await conversationService.sendMessage(activeConversation.id, content, keywords);
 
-      // Recarrega a conversa completa do backend
+      console.log('✅ Resposta recebida da IA');
+
+      // Aguarda 500ms para evitar rate limiting e então recarrega a conversa
+      // Isso garante que temos os IDs corretos do backend
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      console.log('🔄 Recarregando conversa completa...');
       const updatedConversation = await conversationService.get(activeConversation.id);
 
-      // DEBUG: Verifica duplicatas
-      console.log('📊 Mensagens recebidas do backend:', updatedConversation.messages.length);
-      console.log('📋 IDs das mensagens:', updatedConversation.messages.map(m => m.id));
+      // Remove duplicatas se houver
+      const uniqueMessages = updatedConversation.messages.filter((message, index, self) =>
+        index === self.findIndex(m => m.id === message.id)
+      );
 
-      // Verifica se há IDs duplicados
-      const ids = updatedConversation.messages.map(m => m.id);
-      const uniqueIds = new Set(ids);
-      if (ids.length !== uniqueIds.size) {
-        console.warn('⚠️ DUPLICATAS DETECTADAS! Backend retornou mensagens duplicadas');
-        console.log('IDs duplicados:', ids.filter((id, index) => ids.indexOf(id) !== index));
+      setActiveConversation({
+        ...updatedConversation,
+        messages: uniqueMessages,
+      });
 
-        // Remove duplicatas baseado no ID
-        const uniqueMessages = updatedConversation.messages.filter((message, index, self) =>
-          index === self.findIndex(m => m.id === message.id)
-        );
-        updatedConversation.messages = uniqueMessages;
-        console.log('✅ Duplicatas removidas. Total de mensagens únicas:', uniqueMessages.length);
+      // Atualiza apenas o contador na lista de conversas (otimista, sem nova requisição)
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === activeConversation.id
+            ? {
+              ...conv,
+              messageCount: uniqueMessages.length,
+              lastMessageAt: updatedConversation.lastMessageAt,
+            }
+            : conv
+        ).sort((a, b) => {
+          const dateA = new Date(a.lastMessageAt).getTime();
+          const dateB = new Date(b.lastMessageAt).getTime();
+          return dateB - dateA;
+        })
+      );
+
+      console.log('✅ Conversa atualizada com sucesso!');
+    } catch (error: any) {
+      console.error('❌ Erro ao enviar mensagem:', error);
+      console.error('Detalhes do erro:', {
+        message: error?.message,
+        stack: error?.stack,
+        name: error?.name
+      });
+
+      // Mostra mensagem de erro específica para o usuário
+      if (error?.message?.includes('429') || error?.message?.includes('Too Many Requests')) {
+        alert('Muitas requisições. Por favor, aguarde um momento e tente novamente.');
+      } else {
+        alert('Erro ao enviar mensagem. Tente novamente.');
       }
-
-      setActiveConversation(updatedConversation);
-
-      // Atualiza a lista de conversas para refletir messageCount atualizado
-      await loadConversations();
-    } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-      alert('Erro ao enviar mensagem. Tente novamente.');
     } finally {
       setIsLoadingConversation(false);
     }

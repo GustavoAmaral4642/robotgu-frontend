@@ -7,6 +7,30 @@ import {
 } from '../types/conversation';
 
 const API_BASE_URL = '/api';
+const API_TIMEOUT = 10000; // 10 segundos
+
+/**
+ * Adiciona timeout a uma requisição fetch
+ */
+const fetchWithTimeout = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('A requisição excedeu o tempo limite de 10 segundos');
+    }
+    throw error;
+  }
+};
 
 export const conversationService = {
   /**
@@ -18,7 +42,7 @@ export const conversationService = {
       ? `${API_BASE_URL}/conversations?title=${encodeURIComponent(title)}`
       : `${API_BASE_URL}/conversations`;
 
-    const response = await fetch(url);
+    const response = await fetchWithTimeout(url);
 
     if (!response.ok) {
       throw new Error(`Erro ao listar conversas: ${response.status}`);
@@ -34,7 +58,7 @@ export const conversationService = {
   async create(title: string): Promise<Conversation> {
     const request: CreateConversationRequest = { title };
 
-    const response = await fetch(`${API_BASE_URL}/conversations`, {
+    const response = await fetchWithTimeout(`${API_BASE_URL}/conversations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,7 +78,7 @@ export const conversationService = {
    * @param id - ID da conversa
    */
   async get(id: number): Promise<ConversationDetail> {
-    const response = await fetch(`${API_BASE_URL}/conversations/${id}`);
+    const response = await fetchWithTimeout(`${API_BASE_URL}/conversations/${id}`);
 
     if (!response.ok) {
       throw new Error(`Erro ao buscar conversa: ${response.status}`);
@@ -70,12 +94,12 @@ export const conversationService = {
    * @param keywords - Palavras-chave opcionais para busca contextual
    */
   async sendMessage(conversationId: number, content: string, keywords?: string): Promise<Message> {
-    const request: SendMessageRequest = { 
+    const request: SendMessageRequest = {
       content,
       ...(keywords && { keywords })
     };
 
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `${API_BASE_URL}/conversations/${conversationId}/messages`,
       {
         method: 'POST',
@@ -87,6 +111,9 @@ export const conversationService = {
     );
 
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('Too Many Requests - aguarde alguns segundos antes de enviar outra mensagem');
+      }
       throw new Error(`Erro ao enviar mensagem: ${response.status}`);
     }
 
@@ -98,7 +125,7 @@ export const conversationService = {
    * @param id - ID da conversa
    */
   async delete(id: number): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/conversations/${id}`, {
+    const response = await fetchWithTimeout(`${API_BASE_URL}/conversations/${id}`, {
       method: 'DELETE',
     });
 

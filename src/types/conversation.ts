@@ -1,3 +1,5 @@
+import { ContextInfo } from './chat';
+
 export interface Conversation {
   id: number;
   title: string;
@@ -16,6 +18,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   createdAt: string;
+  contextInfo?: ContextInfo;
 }
 
 export interface CreateConversationRequest {

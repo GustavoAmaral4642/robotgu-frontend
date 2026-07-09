@@ -54,8 +54,8 @@ const NewQuestionModal = ({ isOpen, onClose, onSuccess }: NewQuestionModalProps)
     setError(null);
 
     try {
-      const answer = await sendMessage(question, subject || '', useGlobalContext, keywords || undefined);
-      onSuccess(answer);
+      const response = await sendMessage(question, subject || '', useGlobalContext, keywords || undefined);
+      onSuccess(response.answer);
       handleClose();
     } catch (err) {
       setError('Erro ao enviar pergunta. Tente novamente.');

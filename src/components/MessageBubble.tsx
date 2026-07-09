@@ -1,5 +1,6 @@
 import { ChatMessage } from '../types/chat';
 import ReactMarkdown from 'react-markdown';
+import ContextIndicator from './ContextIndicator';
 import './MessageBubble.css';
 
 interface MessageBubbleProps {
@@ -12,6 +13,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
   return (
     <div className={`message-container ${isUser ? 'user' : 'assistant'}`}>
       <div className={`message-bubble ${isUser ? 'user' : 'assistant'}`}>
+        {!isUser && <ContextIndicator contextInfo={message.contextInfo} />}
         <div className="message-content">
           {isUser ? (
             <p>{message.content}</p>

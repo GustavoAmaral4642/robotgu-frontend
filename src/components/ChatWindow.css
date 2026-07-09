@@ -48,10 +48,22 @@
   box-shadow: 0 1px 2px var(--shadow-sm);
 }
 
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .loading-dots {
   display: flex;
   gap: 6px;
   align-items: center;
+}
+
+.loading-text {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  font-style: italic;
 }
 
 .loading-dots span {

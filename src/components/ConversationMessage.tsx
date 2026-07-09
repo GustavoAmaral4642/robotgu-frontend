@@ -1,5 +1,6 @@
 import { Message } from '../types/conversation';
 import ReactMarkdown from 'react-markdown';
+import ContextIndicator from './ContextIndicator';
 import './ConversationMessage.css';
 
 interface ConversationMessageProps {
@@ -22,6 +23,7 @@ const ConversationMessage = ({ message }: ConversationMessageProps) => {
           })}
         </span>
       </div>
+      {!isUser && <ContextIndicator contextInfo={message.contextInfo} />}
       <div className="message-content">
         {isUser ? (
           <p>{message.content}</p>

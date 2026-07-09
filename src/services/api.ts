@@ -1,13 +1,37 @@
 import { ChatRequest, ChatResponse, MemoryResponse } from '../types/chat';
 
 const API_BASE_URL = '/api';
+const API_TIMEOUT = 10000; // 10 segundos
+
+/**
+ * Adiciona timeout a uma requisição fetch
+ */
+const fetchWithTimeout = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('A requisição excedeu o tempo limite de 10 segundos');
+    }
+    throw error;
+  }
+};
 
 export const sendMessage = async (
   question: string,
   subject: string = '',
   useGlobalContext: boolean = false,
   keywords?: string
-): Promise<string> => {
+): Promise<ChatResponse> => {
   const request: ChatRequest = {
     subject,
     question,
@@ -19,7 +43,7 @@ export const sendMessage = async (
     : `${API_BASE_URL}/chat`;
 
   try {
-    const response = await fetch(url, {
+    const response = await fetchWithTimeout(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,11 +52,14 @@ export const sendMessage = async (
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('Too Many Requests - aguarde alguns segundos antes de tentar novamente');
+      }
       throw new Error(`Erro na requisição: ${response.status}`);
     }
 
     const data: ChatResponse = await response.json();
-    return data.answer;
+    return data;
   } catch (error) {
     console.error('Erro ao enviar mensagem:', error);
     throw error;
@@ -41,7 +68,7 @@ export const sendMessage = async (
 
 export const getSubjects = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/chat/subjects`);
+    const response = await fetchWithTimeout(`${API_BASE_URL}/chat/subjects`);
 
     if (!response.ok) {
       throw new Error(`Erro ao buscar assuntos: ${response.status}`);
@@ -56,7 +83,7 @@ export const getSubjects = async (): Promise<string[]> => {
 
 export const searchMemories = async (subject: string): Promise<MemoryResponse[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/chat/search?subject=${encodeURIComponent(subject)}`);
+    const response = await fetchWithTimeout(`${API_BASE_URL}/chat/search?subject=${encodeURIComponent(subject)}`);
 
     if (!response.ok) {
       throw new Error(`Erro ao buscar memórias: ${response.status}`);
@@ -71,7 +98,7 @@ export const searchMemories = async (subject: string): Promise<MemoryResponse[]>
 
 export const getAllMemories = async (): Promise<MemoryResponse[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/chat/memories`);
+    const response = await fetchWithTimeout(`${API_BASE_URL}/chat/memories`);
 
     if (!response.ok) {
       throw new Error(`Erro ao buscar todas as memórias: ${response.status}`);

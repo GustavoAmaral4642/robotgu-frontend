@@ -34,10 +34,13 @@ const ChatWindow = ({ messages, isLoading }: ChatWindowProps) => {
           {isLoading && (
             <div className="loading-container">
               <div className="loading-bubble">
-                <div className="loading-dots">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                <div className="loading-content">
+                  <div className="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <div className="loading-text">Processando com contexto inteligente... (~5s)</div>
                 </div>
               </div>
             </div>

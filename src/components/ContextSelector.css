@@ -1,0 +1,255 @@
+.context-selector {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  background: #f9f9f9;
+}
+
+.context-selector.loading,
+.context-selector.empty {
+  text-align: center;
+  padding: 32px;
+  color: #666;
+}
+
+.context-selector.loading .loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4a90e2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.context-selector.empty .hint {
+  font-size: 0.9em;
+  color: #999;
+  margin-top: 8px;
+}
+
+/* Header */
+.context-selector-header {
+  margin-bottom: 16px;
+}
+
+.context-selector-header h4 {
+  margin: 0 0 4px 0;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.context-selector-header .subtitle {
+  margin: 0;
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* Search Bar */
+.search-bar {
+  margin-bottom: 12px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: #4a90e2;
+  font-size: 0.9em;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.btn-link:hover {
+  opacity: 0.7;
+}
+
+/* Conversation List */
+.conversation-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+}
+
+.conversation-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.conversation-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.conversation-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.conversation-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.no-results {
+  padding: 32px;
+  text-align: center;
+  color: #999;
+}
+
+/* Conversation Item */
+.conversation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.conversation-item:last-child {
+  border-bottom: none;
+}
+
+.conversation-item:hover {
+  background-color: #f5f5f5;
+}
+
+.conversation-item input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.conversation-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversation-question {
+  color: #333;
+  margin-bottom: 6px;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.conversation-question strong {
+  color: #4a90e2;
+  margin-right: 4px;
+}
+
+.conversation-preview {
+  color: #666;
+  font-size: 0.85em;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.conversation-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.8em;
+  color: #999;
+}
+
+/* Stats */
+.context-stats {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.context-stats.ok {
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  color: #2e7d32;
+}
+
+.context-stats.warning {
+  background: #fff3e0;
+  border: 1px solid #ffb74d;
+  color: #e65100;
+}
+
+.stats-content {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  gap: 4px;
+}
+
+.stat strong {
+  font-weight: 600;
+}
+
+.warning-message {
+  margin-top: 8px;
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .conversation-list {
+    max-height: 300px;
+  }
+
+  .context-selector-header h4 {
+    font-size: 1em;
+  }
+
+  .bulk-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-link {
+    text-align: left;
+  }
+}

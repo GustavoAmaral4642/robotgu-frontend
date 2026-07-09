@@ -1,7 +1,8 @@
 import { ChatRequest, ChatResponse, MemoryResponse } from '../types/chat';
+import { HistoryResponse } from '../types/conversation';
 
 const API_BASE_URL = '/api';
-const API_TIMEOUT = 10000; // 10 segundos
+const API_TIMEOUT = 30000; // 30 segundos
 
 /**
  * Adiciona timeout a uma requisição fetch
@@ -107,6 +108,25 @@ export const getAllMemories = async (): Promise<MemoryResponse[]> => {
     return await response.json();
   } catch (error) {
     console.error('Erro ao buscar todas as memórias:', error);
+    throw error;
+  }
+};
+
+/**
+ * Busca histórico de conversas antigas de um assunto para seleção manual de contexto
+ * @param subject - Assunto/tópico das conversas
+ */
+export const getHistory = async (subject: string): Promise<HistoryResponse> => {
+  try {
+    const response = await fetchWithTimeout(`${API_BASE_URL}/chat/history/${encodeURIComponent(subject)}`);
+
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar histórico: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erro ao buscar histórico:', error);
     throw error;
   }
 };

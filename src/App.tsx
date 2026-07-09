@@ -5,6 +5,7 @@ import MemoriesView from './components/MemoriesView';
 import ImportedChatView from './components/ImportedChatView';
 import NewQuestionModal from './components/NewQuestionModal';
 import ImportChatModal from './components/ImportChatModal';
+import NewConversationModal from './components/NewConversationModal';
 import SubjectSelector from './components/SubjectSelector';
 import ContextPanel from './components/ContextPanel';
 import GlobalContextToggle from './components/GlobalContextToggle';
@@ -24,6 +25,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isNewConversationModalOpen, setIsNewConversationModalOpen] = useState(false);
 
   // Estados para seleção de assunto e contexto (aba Chat legado)
   const [subjects, setSubjects] = useState<string[]>([]);
@@ -165,21 +167,27 @@ function App() {
     }
   };
 
-  const handleCreateConversation = async () => {
-    const title = prompt('Digite o título da conversa:');
-    if (!title || !title.trim()) return;
-
+  const handleCreateConversation = async (title: string, contextIds?: number[]) => {
     try {
-      const newConversation = await conversationService.create(title.trim());
+      const newConversation = await conversationService.create(title, contextIds);
       setConversations((prev) => [newConversation, ...prev]);
 
       // Seleciona a nova conversa
       const detail = await conversationService.get(newConversation.id);
       setActiveConversation(detail);
+
+      console.log(`✅ Conversa "${title}" criada com sucesso!`);
+      if (contextIds && contextIds.length > 0) {
+        console.log(`📎 Contexto incluído: ${contextIds.length} conversas`);
+      }
     } catch (error) {
       console.error('Erro ao criar conversa:', error);
-      alert('Erro ao criar conversa. Tente novamente.');
+      throw error; // Propaga o erro para o modal tratar
     }
+  };
+
+  const handleOpenNewConversationModal = () => {
+    setIsNewConversationModalOpen(true);
   };
 
   const handleSelectConversation = async (id: number) => {
@@ -216,6 +224,19 @@ function App() {
 
   const handleSendConversationMessage = async (content: string, keywords?: string) => {
     if (!activeConversation) return;
+
+    // Adiciona mensagem do usuário imediatamente (optimistic update)
+    const tempUserMessage: Message = {
+      id: -Date.now(), // ID temporário negativo
+      role: 'user',
+      content,
+      createdAt: new Date().toISOString(),
+    };
+
+    setActiveConversation({
+      ...activeConversation,
+      messages: [...activeConversation.messages, tempUserMessage],
+    });
 
     setIsLoadingConversation(true);
 
@@ -269,11 +290,28 @@ function App() {
         name: error?.name
       });
 
+      // Adiciona mensagem de erro da IA (a mensagem do usuário já está visível)
+      const errorMessage: Message = {
+        id: -Date.now() - 1, // ID temporário negativo diferente
+        role: 'assistant',
+        content: '❌ Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.',
+        createdAt: new Date().toISOString(),
+      };
+
+      // Usa setState funcional para garantir estado mais recente
+      setActiveConversation(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          messages: [...prev.messages, errorMessage],
+        };
+      });
+
       // Mostra mensagem de erro específica para o usuário
       if (error?.message?.includes('429') || error?.message?.includes('Too Many Requests')) {
-        alert('Muitas requisições. Por favor, aguarde um momento e tente novamente.');
-      } else {
-        alert('Erro ao enviar mensagem. Tente novamente.');
+        console.warn('⚠️ Rate limit atingido');
+      } else if (error?.message?.includes('Failed to fetch') || error?.message?.includes('NetworkError')) {
+        console.warn('⚠️ Erro de conexão com o servidor');
       }
     } finally {
       setIsLoadingConversation(false);
@@ -358,7 +396,7 @@ function App() {
               activeConversationId={activeConversation?.id || null}
               onSelectConversation={handleSelectConversation}
               onDeleteConversation={handleDeleteConversation}
-              onCreateConversation={handleCreateConversation}
+              onCreateConversation={handleOpenNewConversationModal}
             />
             <ConversationArea
               conversation={activeConversation}
@@ -406,6 +444,12 @@ function App() {
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         onSuccess={handleImportSuccess}
+      />
+
+      <NewConversationModal
+        isOpen={isNewConversationModalOpen}
+        onClose={() => setIsNewConversationModalOpen(false)}
+        onCreate={handleCreateConversation}
       />
     </div>
   );

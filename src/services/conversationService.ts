@@ -7,7 +7,7 @@ import {
 } from '../types/conversation';
 
 const API_BASE_URL = '/api';
-const API_TIMEOUT = 10000; // 10 segundos
+const API_TIMEOUT = 30000; // 30 segundos
 
 /**
  * Adiciona timeout a uma requisição fetch
@@ -26,7 +26,7 @@ const fetchWithTimeout = async (url: string, options: RequestInit = {}): Promise
   } catch (error: any) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
-      throw new Error('A requisição excedeu o tempo limite de 10 segundos');
+      throw new Error('A requisição excedeu o tempo limite de 30 segundos');
     }
     throw error;
   }
@@ -54,9 +54,13 @@ export const conversationService = {
   /**
    * Cria uma nova conversa
    * @param title - Título da conversa
+   * @param contextConversationIds - IDs de conversas antigas para usar como contexto inicial
    */
-  async create(title: string): Promise<Conversation> {
-    const request: CreateConversationRequest = { title };
+  async create(title: string, contextConversationIds?: number[]): Promise<Conversation> {
+    const request: CreateConversationRequest = {
+      title,
+      ...(contextConversationIds && contextConversationIds.length > 0 && { contextConversationIds })
+    };
 
     const response = await fetchWithTimeout(`${API_BASE_URL}/conversations`, {
       method: 'POST',

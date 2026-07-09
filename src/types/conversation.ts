@@ -23,6 +23,7 @@ export interface Message {
 
 export interface CreateConversationRequest {
   title: string;
+  contextConversationIds?: number[];  // IDs de conversas para usar como contexto inicial
 }
 
 export interface SendMessageRequest {
@@ -35,3 +36,18 @@ export interface MessageResponse extends Message { }
 export interface ConversationResponse extends Conversation { }
 
 export interface ConversationDetailResponse extends ConversationDetail { }
+
+// Novos tipos para seleção manual de contexto
+export interface ConversationSummary {
+  id: number;
+  question: string;
+  answerPreview: string;
+  createdAt: string;
+  characterCount: number;
+}
+
+export interface HistoryResponse {
+  subject: string;
+  total: number;
+  conversations: ConversationSummary[];
+}
